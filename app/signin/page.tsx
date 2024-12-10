@@ -46,7 +46,7 @@ export default function SignIn() {
         await signIn(email, password)
       }
       // The useEffect hook will handle the redirection
-    } catch (err) {
+    } catch {
       setError('Invalid email or password')
     } finally {
       setIsLoading(false)

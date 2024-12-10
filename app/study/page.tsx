@@ -20,12 +20,6 @@ export default function StudyFlashcards() {
     fetchSettings()
   }, [fetchFlashcards, fetchSettings])
 
-  useEffect(() => {
-    if (flashcards.length > 0) {
-      setCurrentCard(getRandomCardIndex())
-    }
-  }, [flashcards])
-
   const getRandomCardIndex = useCallback(() => {
     const totalWeight = flashcards.reduce((sum, card) => sum + (1 / card.easiness), 0)
     let randomWeight = Math.random() * totalWeight
@@ -41,6 +35,12 @@ export default function StudyFlashcards() {
 
     return chosenIndex
   }, [flashcards])
+
+  useEffect(() => {
+    if (flashcards.length > 0) {
+      setCurrentCard(getRandomCardIndex())
+    }
+  }, [flashcards, getRandomCardIndex])
 
   const speakText = useCallback(async (text: string) => {
     if (isSpeaking) return
