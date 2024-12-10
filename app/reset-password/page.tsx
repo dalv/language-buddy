@@ -18,16 +18,9 @@ export default function ResetPassword() {
   useEffect(() => {
     const getResetTokenFromURL = () => {
       if (typeof window !== 'undefined') {
-        const hash = window.location.hash;
-        var urlToken = null;
-
-        if (hash) {
-          // Remove the leading '#' and parse it
-          const params = new URLSearchParams(hash.substring(1));
-          const token = params.get('access_token');
-          urlToken = token;
-        }
-
+        const searchParams = new URLSearchParams(window.location.search)
+        const urlToken = searchParams.get('token')
+        
         if (urlToken) {
           setResetToken(urlToken)
           setIsLoading(false)
@@ -46,30 +39,17 @@ export default function ResetPassword() {
     setError('')
     setIsLoading(true)
 
-
     try {
       if (!resetToken) {
         throw new Error('Invalid reset token')
       }
 
-      const { data, error } = await supabase.auth.exchangeCodeForSession(resetToken)
-      console.log("Reset token:");
-      console.log(resetToken);
-      console.log("Session:");
-      console.log(data);
-    } catch (err) {
-      console.error('Failedget session from reset token:', err)
-      setError('Failed to update password. Please try again or request a new password reset email.')
-    } finally {
-      setIsLoading(false)
-    }
+      const { error } = await supabase.auth.verifyOtp({
+        token: resetToken,
+        type: 'recovery',
+        new_password: newPassword,
+      })
 
-    try {
-      if (!resetToken) {
-        throw new Error('Invalid reset token')
-      }
-      
-      const { data, error } = await supabase.auth.updateUser({password: `${newPassword}`});
       if (error) throw error
 
       setMessage('Password updated successfully. Redirecting to sign in...')
@@ -123,4 +103,3 @@ export default function ResetPassword() {
     </div>
   )
 }
-
