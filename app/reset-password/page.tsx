@@ -44,10 +44,8 @@ export default function ResetPassword() {
         throw new Error('Invalid reset token')
       }
 
-      const { error } = await supabase.auth.verifyOtp({
-        token: resetToken,
-        type: 'recovery',
-        new_password: newPassword,
+      const { error } = await supabase.auth.resetPasswordForEmail('valid.email@supabase.io', {
+        redirectTo: 'http://example.com/account/update-password',
       })
 
       if (error) throw error
