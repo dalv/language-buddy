@@ -8,7 +8,7 @@ if (!ELEVENLABS_API_KEY) {
 }
 
 export async function POST(req: Request) {
-  try {
+  try { 
     const { text } = await req.json()
 
     if (!ELEVENLABS_API_KEY) {
